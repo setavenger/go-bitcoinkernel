@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"path/filepath"
 
 	"github.com/setavenger/go-bitcoinkernel/pkg/bitcoinkernel"
 )
@@ -13,7 +12,7 @@ import (
 var datadir string
 
 func init() {
-	flag.StringVar(&datadir, "datadir", filepath.Join(os.TempDir(), "bitcoinkernel"), "Data directory for Bitcoin Kernel")
+	flag.StringVar(&datadir, "datadir", "", "Data directory of Bitcoin Core")
 	flag.Parse()
 
 	if datadir == "" {
@@ -34,7 +33,7 @@ func main() {
 		log.Fatalf("Failed to create datadir: %v", err)
 	}
 
-	chainman, err := ctx.NewChainstateManager(datadir)
+	chainman, err := bitcoinkernel.NewChainstateManager(ctx, datadir)
 	if err != nil {
 		log.Fatalf("Failed to create chainstate manager: %v", err)
 	}
@@ -48,4 +47,10 @@ func main() {
 	defer blockIndex.Close()
 
 	fmt.Println("Successfully got chain tip block index pointer:", blockIndex)
+	// Get block height
+	height := blockIndex.GetHeight()
+	hash := blockIndex.GetBlockHash()
+
+	fmt.Printf("Chain tip at height %d\n", height)
+	fmt.Printf("Block hash: %x\n", hash.GetBytes())
 }
