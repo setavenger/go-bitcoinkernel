@@ -4,7 +4,6 @@ import (
 	"flag"
 	"fmt"
 	"log"
-	"os"
 
 	"github.com/setavenger/go-bitcoinkernel/pkg/bitcoinkernel"
 )
@@ -27,11 +26,6 @@ func main() {
 		log.Fatalf("Failed to create context: %v", err)
 	}
 	defer ctx.Close()
-
-	// Create a chain state manager
-	if err := os.MkdirAll(datadir, 0755); err != nil {
-		log.Fatalf("Failed to create datadir: %v", err)
-	}
 
 	chainman, err := bitcoinkernel.NewChainstateManager(ctx, datadir)
 	if err != nil {

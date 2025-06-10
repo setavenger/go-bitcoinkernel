@@ -18,11 +18,11 @@ func (b *BlockIndex) Close() {
 }
 
 // GetHeight returns the height of the block
-func (b *BlockIndex) GetHeight() int32 {
+func (b *BlockIndex) GetHeight() uint32 {
 	if b.ptr == nil {
-		return -1
+		return 0
 	}
-	return int32(C.kernel_block_index_get_height(b.ptr))
+	return uint32(C.kernel_block_index_get_height(b.ptr))
 }
 
 // // GetBlockHash returns the hash of the block in Little Endian format

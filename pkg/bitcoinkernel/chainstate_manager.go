@@ -88,3 +88,27 @@ func (m *ChainstateManager) GetNextBlockIndex(blockIndex *BlockIndex) *BlockInde
 	}
 	return &BlockIndex{ptr: next}
 }
+
+// ReadBlockData reads the block data from disk
+func (m *ChainstateManager) ReadBlockData(blockIndex *BlockIndex) (*Block, error) {
+	if m.ptr == nil || m.ctx == nil || blockIndex == nil {
+		return nil, errors.New("chainstate manager, context, or block index is nil")
+	}
+	block := C.kernel_read_block_from_disk(m.ctx.ptr, m.ptr, blockIndex.ptr)
+	if block == nil {
+		return nil, errors.New("failed to read block from disk")
+	}
+	return &Block{ptr: block}, nil
+}
+
+// ReadUndoData reads the block undo data from disk
+func (m *ChainstateManager) ReadUndoData(blockIndex *BlockIndex) (*BlockUndo, error) {
+	if m.ptr == nil || m.ctx == nil || blockIndex == nil {
+		return nil, errors.New("chainstate manager, context, or block index is nil")
+	}
+	undo := C.kernel_read_block_undo_from_disk(m.ctx.ptr, m.ptr, blockIndex.ptr)
+	if undo == nil {
+		return nil, errors.New("failed to read block undo from disk")
+	}
+	return &BlockUndo{ptr: undo}, nil
+}
